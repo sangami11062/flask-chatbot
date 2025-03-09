@@ -1,26 +1,25 @@
 from flask import Flask, request, jsonify
-import ollama
 from flask_cors import CORS
-  
+import ollama
 
 app = Flask(__name__)
-CORS(app)  # Allow frontend to communicate with backend
+CORS(app)  # Allows frontend access
 
-@app.route("/chat", methods=["POST"])
+@app.route('/chat', methods=['POST'])  # Ensure this route exists
 def chat():
-    data = request.json
-    if not data or "message" not in data:
-        return jsonify({"error": "Message is required"}), 400
-
-    user_input = data["message"]
-
     try:
-        response = ollama.chat(model="mistral", messages=[{"role": "user", "content": user_input}])
-        bot_response = response['message']['content']
-        return jsonify({"response": bot_response})  
+        data = request.json
+        print("Received Data:", data)  # Debugging print
+        user_message = data.get("message", "")
 
+        response = ollama.chat(model="mistral", messages=[{"role": "user", "content": user_message}])
+        print("Ollama Response:", response)  # Debugging print
+        
+        return jsonify({"response": response["message"]["content"]})
+    
     except Exception as e:
-        return jsonify({"error": str(e)}), 500  
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500  # Return error message
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)  # Render uses port 10000
+    app.run(host='0.0.0.0', port=10000)  # Ensure Flask listens on all interfaces
