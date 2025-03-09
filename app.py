@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import ollama
-from flask_cors import CORS  
+from flask_cors import CORS
+  
 
 app = Flask(__name__)
 CORS(app)  # Allow frontend to communicate with backend
